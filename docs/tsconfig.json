@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"@*": ["src/*"]
+			"@*": ["src/*"],
+			"melt": ["../packages/melt/dist"]
 		},
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"types": [
