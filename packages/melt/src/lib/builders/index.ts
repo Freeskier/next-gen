@@ -1,6 +1,7 @@
 export * from "./Accordion.svelte";
 export * from "./Avatar.svelte";
 export * from "./Collapsible.svelte";
+export * from "./ColorPicker.svelte";
 export * from "./Combobox.svelte";
 export * from "./FileUpload.svelte";
 export * from "./PinInput.svelte";

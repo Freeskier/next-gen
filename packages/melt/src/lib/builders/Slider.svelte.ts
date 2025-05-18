@@ -1,6 +1,6 @@
-import { dataAttr, styleAttr } from "$lib/utils/attribute";
-import { extract } from "$lib/utils/extract";
-import { clamp } from "$lib/utils/number";
+import { dataAttr, styleAttr } from "../utils/attribute";
+import { extract } from "../utils/extract";
+import { clamp } from "../utils/number";
 import { useEventListener } from "runed";
 import { Synced } from "../Synced.svelte";
 import type { MaybeGetter } from "../types";

@@ -1,15 +1,15 @@
-import { Synced } from "$lib/Synced.svelte";
-import type { MaybeGetter } from "$lib/types";
-import { dataAttr, styleAttr } from "$lib/utils/attribute";
-import { extract } from "$lib/utils/extract";
-import { createBuilderMetadata } from "$lib/utils/identifiers";
-import { isFunction, isHtmlElement } from "$lib/utils/is";
-import { autoOpenPopover, safelyHidePopover } from "$lib/utils/popover";
+import { Synced } from "../Synced.svelte";
+import type { MaybeGetter } from "../types";
+import { dataAttr, styleAttr } from "../utils/attribute";
+import { extract } from "../utils/extract";
+import { createBuilderMetadata } from "../utils/identifiers";
+import { isFunction, isHtmlElement } from "../utils/is";
+import { autoOpenPopover, safelyHidePopover } from "../utils/popover";
 import {
 	useFloating,
 	type UseFloatingArgs,
 	type UseFloatingConfig,
-} from "$lib/utils/use-floating.svelte";
+} from "../utils/use-floating.svelte";
 import { size, type ElementRects } from "@floating-ui/dom";
 import { dequal } from "dequal";
 import { nanoid } from "nanoid";

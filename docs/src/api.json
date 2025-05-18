@@ -1488,6 +1488,207 @@
     ],
     "propsAlt": "export type ComboboxProps<T extends string, Multiple extends boolean = false> = Omit<\n  PopoverProps,\n  \"closeOnEscape\" | \"closeOnOutsideClick\" | \"sameWidth\"\n> & {\n  /**\n   * If `true`, multiple options can be selected at the same time.\n   *\n   * @default false\n   */\n  multiple?: MaybeGetter<Multiple | undefined>;\n\n  /**\n   * The value for the Combobox.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   *\n   * @default false\n   */\n  value?: MaybeMultiple<T, Multiple>;\n  /**\n   * Called when the value is supposed to change.\n   */\n  onValueChange?: OnMultipleChange<T, Multiple>;\n\n  /**\n   * The currently highlighted value.\n   */\n  highlighted?: MaybeGetter<T | null | undefined>;\n\n  /**\n   * Called when the highlighted value changes.\n   */\n  onHighlightChange?: (highlighted: T | null) => void;\n\n  /**\n   * Determines behavior when scrolling items into view.\n   * Set to null to disable auto-scrolling.\n   *\n   * @default \"nearest\"\n   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView#block\n   */\n  scrollAlignment?: MaybeGetter<\"nearest\" | \"center\" | null | undefined>;\n\n  /**\n   * If the content should have the same width as the trigger\n   *\n   * @default true\n   */\n  sameWidth?: MaybeGetter<boolean | undefined>;\n};"
   },
+  "ColorPicker": {
+    "constructorProps": [
+      {
+        "name": "sameWidth",
+        "type": "any",
+        "description": "If the popover should have the same width as the trigger",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "onOpenChange",
+        "type": "any",
+        "description": "Called when the value is supposed to change.",
+        "optional": true
+      },
+      {
+        "name": "forceVisible",
+        "type": "any",
+        "description": "If the popover visibility should be controlled by the user.",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "floatingConfig",
+        "type": "any",
+        "description": "Config to be passed to `useFloating`",
+        "optional": true
+      },
+      {
+        "name": "closeOnEscape",
+        "type": "any",
+        "description": "If the popover should close when clicking escape.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "closeOnOutsideClick",
+        "type": "any",
+        "description": "If the popover should close when clicking outside.\nAlternatively, accepts a function that receives the clicked element,\nand returns if the popover should close.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "color",
+        "type": "MaybeGetter<string> | undefined",
+        "description": "The color value.\nWhen passing a getter, it will be used as source of truth.\nOtherwise, if passing a static value, it'll serve as the default value.",
+        "defaultValue": "\"#000000\"",
+        "optional": true
+      },
+      {
+        "name": "onColorChange",
+        "type": "((color: string) => void) | undefined",
+        "description": "Called when the color value changes.",
+        "optional": true
+      },
+      {
+        "name": "format",
+        "type": "ColorFormat> | undefined",
+        "description": "The format used for the color input.",
+        "defaultValue": "\"hex\"",
+        "optional": true
+      },
+      {
+        "name": "onFormatChange",
+        "type": "((format: ColorFormat) => void) | undefined",
+        "description": "Called when the format changes.",
+        "optional": true
+      },
+      {
+        "name": "showAlpha",
+        "type": "MaybeGetter<boolean> | undefined",
+        "description": "Whether to show the alpha slider.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "showInput",
+        "type": "MaybeGetter<boolean> | undefined",
+        "description": "Whether to show the input field.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "showFormatToggle",
+        "type": "MaybeGetter<boolean> | undefined",
+        "description": "Whether to show the format switcher.",
+        "defaultValue": "true",
+        "optional": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "hasAlpha",
+        "type": "() => boolean",
+        "description": ""
+      },
+      {
+        "name": "updateSaturationPosition",
+        "type": "() => void",
+        "description": ""
+      },
+      {
+        "name": "updateColor",
+        "type": "() => void",
+        "description": ""
+      },
+      {
+        "name": "getFormatButton",
+        "type": "(format: ColorFormat) => {\n  readonly \"data-melt-colorpicker-format\": ColorFormat\n  readonly \"data-active\": \"\" | undefined\n  readonly role: \"radio\"\n  readonly \"aria-checked\": boolean\n  readonly onclick: () => void\n}",
+        "description": ""
+      }
+    ],
+    "properties": [
+      {
+        "name": "ids",
+        "type": "{\n  trigger: string\n  content: string\n  input: string\n  saturation: string\n  hue: string\n  alpha: string\n  preview: string\n  format: string\n} & { invoker: string; popover: string } & { trigger: string; content: string }",
+        "description": ""
+      },
+      {
+        "name": "showAlpha",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "showInput",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "showFormatToggle",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "hsv",
+        "type": "HSV",
+        "description": ""
+      },
+      {
+        "name": "saturationPosition",
+        "type": "{ x: number; y: number }",
+        "description": ""
+      },
+      {
+        "name": "hue",
+        "type": "{\n  \"data-melt-colorpicker-hue\": string\n  id: string\n  slider: Slider\n  root: {\n    readonly \"data-dragging\": \"\" | undefined\n    readonly \"data-value\": number\n    readonly \"data-orientation\": \"horizontal\" | \"vertical\"\n    readonly \"aria-valuenow\": number\n    readonly \"aria-valuemin\": number\n    readonly \"aria-valuemax\": number\n    readonly \"aria-orientation\": \"horizontal\" | \"vertical\"\n    readonly style: `--percentage: ${string}; --percentage-inv: ${string}; touch-action: ${string}`\n    readonly tabindex: 0\n    readonly role: \"slider\"\n    readonly \"data-melt-slider-root\": \"\"\n    readonly id: string\n    readonly onpointerdown: (e: PointerEvent) => void\n    readonly onkeydown: (e: KeyboardEvent) => void\n  }\n  thumb: {\n    readonly \"data-dragging\": \"\" | undefined\n    readonly \"data-value\": number\n    readonly \"data-orientation\": \"horizontal\" | \"vertical\"\n    readonly \"data-melt-slider-thumb\": \"\"\n    readonly id: string\n    readonly tabindex: 0\n  }\n}",
+        "description": ""
+      },
+      {
+        "name": "alpha",
+        "type": "{\n  \"data-melt-colorpicker-alpha\": string\n  id: string\n  slider: Slider\n  root: {\n    readonly \"data-dragging\": \"\" | undefined\n    readonly \"data-value\": number\n    readonly \"data-orientation\": \"horizontal\" | \"vertical\"\n    readonly \"aria-valuenow\": number\n    readonly \"aria-valuemin\": number\n    readonly \"aria-valuemax\": number\n    readonly \"aria-orientation\": \"horizontal\" | \"vertical\"\n    readonly style: `--percentage: ${string}; --percentage-inv: ${string}; touch-action: ${string}`\n    readonly tabindex: 0\n    readonly role: \"slider\"\n    readonly \"data-melt-slider-root\": \"\"\n    readonly id: string\n    readonly onpointerdown: (e: PointerEvent) => void\n    readonly onkeydown: (e: KeyboardEvent) => void\n  }\n  thumb: {\n    readonly \"data-dragging\": \"\" | undefined\n    readonly \"data-value\": number\n    readonly \"data-orientation\": \"horizontal\" | \"vertical\"\n    readonly \"data-melt-slider-thumb\": \"\"\n    readonly id: string\n    readonly tabindex: 0\n  }\n  style: `--color-a: ${string}; --color-b: ${string}`\n} | null",
+        "description": ""
+      },
+      {
+        "name": "color",
+        "type": "string",
+        "description": ""
+      },
+      {
+        "name": "format",
+        "type": "ColorFormat",
+        "description": ""
+      },
+      {
+        "name": "trigger",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly id: string\n  readonly popovertarget: string\n  readonly onclick: (e: Event) => void\n} & { \"data-melt-popover-trigger\": string } & {\n  \"data-melt-colorpicker-trigger\": string\n  style: `--color: ${string}; background-color: ${string}`\n}",
+        "description": ""
+      },
+      {
+        "name": "content",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & { \"data-melt-popover-content\": string } & {\n  \"data-melt-colorpicker-content\": string\n}",
+        "description": ""
+      },
+      {
+        "name": "saturation",
+        "type": "{\n  readonly \"data-melt-colorpicker-saturation\": \"\"\n  readonly id: string\n  readonly role: \"application\"\n  readonly \"aria-label\": \"Color saturation and brightness selection area\"\n  readonly style: `background: ${string}`\n  readonly onmousedown: (mouseEvent: MouseEvent) => void\n}",
+        "description": ""
+      },
+      {
+        "name": "saturationCursor",
+        "type": "{\n  readonly role: \"presentation\"\n  readonly \"aria-hidden\": true\n  readonly style: `background-color: ${string}; left: ${string}; top: ${string}`\n}",
+        "description": ""
+      },
+      {
+        "name": "saturationOverlay",
+        "type": "{\n  readonly role: \"presentation\"\n  readonly \"aria-hidden\": true\n  readonly style: `background: ${string}`\n}",
+        "description": ""
+      },
+      {
+        "name": "preview",
+        "type": "{\n  readonly \"data-melt-colorpicker-preview\": \"\"\n  readonly id: string\n  readonly style: `background-color: ${string}`\n}",
+        "description": ""
+      },
+      {
+        "name": "input",
+        "type": "{\n  readonly \"data-melt-colorpicker-input\": \"\"\n  readonly id: string\n  readonly oninput: (inputEvent: Event) => void\n} | null",
+        "description": ""
+      }
+    ],
+    "propsAlt": "export type ColorPickerProps = Omit<PopoverProps, \"open\"> & {\n  /**\n   * The color value.\n   * When passing a getter, it will be used as source of truth.\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default \"#000000\"\n   */\n  color?: MaybeGetter<string>;\n\n  /**\n   * Called when the color value changes.\n   */\n  onColorChange?: (color: string) => void;\n\n  /**\n   * The format used for the color input.\n   *\n   * @default \"hex\"\n   */\n  format?: MaybeGetter<ColorFormat>;\n\n  /**\n   * Called when the format changes.\n   */\n  onFormatChange?: (format: ColorFormat) => void;\n\n  /**\n   * Whether to show the alpha slider.\n   *\n   * @default true\n   */\n  showAlpha?: MaybeGetter<boolean>;\n\n  /**\n   * Whether to show the input field.\n   *\n   * @default true\n   */\n  showInput?: MaybeGetter<boolean>;\n\n  /**\n   * Whether to show the format switcher.\n   *\n   * @default true\n   */\n  showFormatToggle?: MaybeGetter<boolean>;\n};"
+  },
   "Collapsible": {
     "constructorProps": [
       {
