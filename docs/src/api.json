@@ -1287,6 +1287,243 @@
     ],
     "propsAlt": "export type FileUploadProps<Multiple extends boolean = false> = {\n  /**\n   * The currently selected files.\n   */\n  selected?: MaybeMultiple<File, Multiple>;\n\n  /**\n   * Callback fired when selected files change\n   */\n  onSelectedChange?: (files: Multiple extends true ? Set<File> : File | undefined) => void;\n\n  /**\n   * Whether to accept multiple files\n   * @default false\n   */\n  multiple?: MaybeGetter<Multiple | undefined>;\n\n  /**\n   * The accepted file types. Can be a MIME type, a MIME group, or a file extension.\n   * Separate multiple types with a comma.\n   * @example 'image/jpeg'\n   * @example 'image/*'\n   * @example '.png, .jpg, .jpeg'\n   */\n  accept?: MaybeGetter<string | undefined>;\n\n  /**\n   * Maximum file size in bytes\n   * @default undefined\n   */\n  maxSize?: MaybeGetter<number | undefined>;\n\n  /**\n   * Whether the file upload is disabled\n   * @default false\n   */\n  disabled?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Custom validate fn. Will be called together with the original validation,\n   * which takes into account the `accept` and `maxSize` props.\n   */\n  validate?: (file: File) => boolean;\n\n  /**\n   * Callback fired when a file fails validation\n   */\n  onError?: (error: FileUploadError) => void;\n\n  /**\n   * Callback fired when a file is accepted\n   */\n  onAccept?: (file: File) => void;\n\n  /**\n   * If true, checks the files contents to avoid duplicate.\n   * It's performance is not tested in large files, so by default its set to false.\n   *\n   * @default false\n   */\n  avoidDuplicates?: MaybeGetter<boolean | undefined>;\n};"
   },
+  "DataTable": {
+    "constructorProps": [
+      {
+        "name": "data",
+        "type": "MaybeGetter<T[]>",
+        "description": "Array of data to display in the table",
+        "optional": false
+      },
+      {
+        "name": "columns",
+        "type": "DataTableColumn<T>[]>",
+        "description": "Array of column configurations",
+        "optional": false
+      },
+      {
+        "name": "sortBy",
+        "type": "MaybeGetter<string | null> | undefined",
+        "description": "Column ID to sort by",
+        "optional": true
+      },
+      {
+        "name": "sortDirection",
+        "type": "SortDirection> | undefined",
+        "description": "Sort direction",
+        "optional": true
+      },
+      {
+        "name": "onSortChange",
+        "type": "((id: string | null, direction: SortDirection) => void) | undefined",
+        "description": "Called when sort parameters change",
+        "optional": true
+      },
+      {
+        "name": "pagination",
+        "type": "MaybeGetter<boolean> | undefined",
+        "description": "Whether to enable pagination",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "pageSize",
+        "type": "MaybeGetter<number> | undefined",
+        "description": "Number of rows per page",
+        "defaultValue": "10",
+        "optional": true
+      },
+      {
+        "name": "page",
+        "type": "MaybeGetter<number> | undefined",
+        "description": "Current page (1-based)",
+        "defaultValue": "1",
+        "optional": true
+      },
+      {
+        "name": "onPageChange",
+        "type": "((page: number) => void) | undefined",
+        "description": "Called when page changes",
+        "optional": true
+      },
+      {
+        "name": "onPageSizeChange",
+        "type": "((pageSize: number) => void) | undefined",
+        "description": "Called when page size changes",
+        "optional": true
+      },
+      {
+        "name": "keyboardNavigation",
+        "type": "MaybeGetter<boolean> | undefined",
+        "description": "Whether to make the table keyboard navigable",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "resizableColumns",
+        "type": "MaybeGetter<boolean> | undefined",
+        "description": "Whether columns can be resized",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "onColumnResize",
+        "type": "((columnId: string, width: number) => void) | undefined",
+        "description": "Called when column width changes",
+        "optional": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "toggleSort",
+        "type": "(columnId: string) => void",
+        "description": ""
+      },
+      {
+        "name": "nextPage",
+        "type": "() => void",
+        "description": ""
+      },
+      {
+        "name": "prevPage",
+        "type": "() => void",
+        "description": ""
+      },
+      {
+        "name": "goToPage",
+        "type": "(page: number) => void",
+        "description": ""
+      },
+      {
+        "name": "getCellContent",
+        "type": "(column: DataTableColumn<T>, row: T) => string",
+        "description": ""
+      },
+      {
+        "name": "getHeaderCell",
+        "type": "(\n  column: DataTableColumn<T>,\n  _index: number,\n) => {\n  readonly \"data-melt-datatable-headerCell\": \"\"\n  readonly role: \"columnheader\"\n  readonly \"aria-sort\": \"ascending\" | \"descending\" | undefined\n  readonly \"data-sortable\": \"\" | undefined\n  readonly \"data-sorted\": \"\" | undefined\n  readonly \"data-sort-direction\": SortDirection | undefined\n  readonly \"data-resizable\": \"\" | undefined\n  readonly \"data-value\": string\n  readonly style: `width: ${string};`\n  readonly onclick: (e: MouseEvent) => void\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly tabindex: 0 | -1\n}",
+        "description": ""
+      },
+      {
+        "name": "getRow",
+        "type": "(rowIndex: number) => {\n  readonly \"data-melt-datatable-row\": \"\"\n  readonly role: \"row\"\n  readonly \"data-row-index\": number\n}",
+        "description": ""
+      },
+      {
+        "name": "getCell",
+        "type": "(\n  rowIndex: number,\n  colIndex: number,\n) => {\n  readonly \"data-melt-datatable-cell\": \"\"\n  readonly role: \"cell\"\n  readonly \"data-row-index\": number\n  readonly \"data-col-index\": number\n  readonly tabindex: 0 | -1 | undefined\n  readonly onkeydown: (e: KeyboardEvent) => void\n  readonly onfocus: () => void\n}",
+        "description": ""
+      },
+      {
+        "name": "getColumnWidth",
+        "type": "(columnId: string) => string",
+        "description": "Gets the current width of a column"
+      },
+      {
+        "name": "resizeColumn",
+        "type": "(columnId: string, width: number) => void",
+        "description": "Resizes a column to the specified width"
+      },
+      {
+        "name": "getResizeHandle",
+        "type": "(columnId: string) => {\n  readonly class: \"column-resize-handle\"\n  readonly \"data-resize-handle\": string\n  readonly \"aria-hidden\": true\n  readonly style: \"position: absolute; right: 0; top: 0; height: 100%; width: 8px; cursor: col-resize; z-index: 10;\"\n  readonly onmousedown: (e: MouseEvent) => void\n  readonly ontouchstart: (e: TouchEvent) => void\n}",
+        "description": "Handle for column resize"
+      }
+    ],
+    "properties": [
+      {
+        "name": "ids",
+        "type": "{\n  root: string\n  cell: string\n  row: string\n  header: string\n  headerRow: string\n  headerCell: string\n  body: string\n  footer: string\n  pagination: string\n  emptyState: string\n}",
+        "description": ""
+      },
+      {
+        "name": "columns",
+        "type": "DataTableColumn<T>[]",
+        "description": ""
+      },
+      {
+        "name": "data",
+        "type": "T[]",
+        "description": ""
+      },
+      {
+        "name": "sortBy",
+        "type": "string | null",
+        "description": ""
+      },
+      {
+        "name": "sortDirection",
+        "type": "SortDirection",
+        "description": ""
+      },
+      {
+        "name": "enablePagination",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "pageSize",
+        "type": "number",
+        "description": ""
+      },
+      {
+        "name": "page",
+        "type": "number",
+        "description": ""
+      },
+      {
+        "name": "totalPages",
+        "type": "number",
+        "description": ""
+      },
+      {
+        "name": "keyboardNavigation",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "resizableColumns",
+        "type": "boolean",
+        "description": ""
+      },
+      {
+        "name": "root",
+        "type": "{\n  readonly \"data-melt-datatable-root\": \"\"\n  readonly role: \"table\"\n  readonly id: string\n}",
+        "description": ""
+      },
+      {
+        "name": "header",
+        "type": "{\n  readonly \"data-melt-datatable-header\": \"\"\n  readonly role: \"rowgroup\"\n}",
+        "description": ""
+      },
+      {
+        "name": "headerRow",
+        "type": "{\n  readonly \"data-melt-datatable-headerRow\": \"\"\n  readonly role: \"row\"\n}",
+        "description": ""
+      },
+      {
+        "name": "body",
+        "type": "{\n  readonly \"data-melt-datatable-body\": \"\"\n  readonly role: \"rowgroup\"\n}",
+        "description": ""
+      },
+      {
+        "name": "footer",
+        "type": "{\n  readonly \"data-melt-datatable-footer\": \"\"\n  readonly role: \"rowgroup\"\n}",
+        "description": ""
+      },
+      {
+        "name": "paginationAttrs",
+        "type": "{\n  readonly \"data-melt-datatable-pagination\": \"\"\n  readonly role: \"navigation\"\n  readonly \"aria-label\": \"Pagination\"\n}",
+        "description": ""
+      },
+      {
+        "name": "emptyState",
+        "type": "{\n  readonly \"data-melt-datatable-emptyState\": \"\"\n  readonly role: \"row\"\n}",
+        "description": ""
+      }
+    ],
+    "propsAlt": "\n\nexport type DataTableProps<T extends Record<string, any>> = {\n  /**\n   * Array of data to display in the table\n   */\n  data: MaybeGetter<T[]>;\n\n  /**\n   * Array of column configurations\n   */\n  columns: MaybeGetter<DataTableColumn<T>[]>;\n\n  /**\n   * Column ID to sort by\n   */\n  sortBy?: MaybeGetter<string | null>;\n\n  /**\n   * Sort direction\n   */\n  sortDirection?: MaybeGetter<SortDirection>;\n\n  /**\n   * Called when sort parameters change\n   */\n  onSortChange?: (id: string | null, direction: SortDirection) => void;\n\n  /**\n   * Whether to enable pagination\n   * @default false\n   */\n  pagination?: MaybeGetter<boolean>;\n\n  /**\n   * Number of rows per page\n   * @default 10\n   */\n  pageSize?: MaybeGetter<number>;\n\n  /**\n   * Current page (1-based)\n   * @default 1\n   */\n  page?: MaybeGetter<number>;\n\n  /**\n   * Called when page changes\n   */\n  onPageChange?: (page: number) => void;\n\n  /**\n   * Called when page size changes\n   */\n  onPageSizeChange?: (pageSize: number) => void;\n\n  /**\n   * Whether to make the table keyboard navigable\n   * @default true\n   */\n  keyboardNavigation?: MaybeGetter<boolean>;\n\n  /**\n   * Whether columns can be resized\n   * @default true\n   */\n  resizableColumns?: MaybeGetter<boolean>;\n\n  /**\n   * Called when column width changes\n   */\n  onColumnResize?: (columnId: string, width: number) => void;\n};"
+  },
   "Combobox": {
     "constructorProps": [
       {

@@ -2,6 +2,7 @@ export * from "./Accordion.svelte";
 export * from "./Avatar.svelte";
 export * from "./Collapsible.svelte";
 export * from "./Combobox.svelte";
+export * from "./DataTable.svelte";
 export * from "./FileUpload.svelte";
 export * from "./PinInput.svelte";
 export * from "./Popover.svelte";
