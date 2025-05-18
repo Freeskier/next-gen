@@ -601,6 +601,190 @@
     ],
     "propsAlt": "export type SliderProps = {\n  /**\n   * The minimum value of the slider.\n   *\n   * @default 0\n   */\n  min?: MaybeGetter<number | undefined>;\n  /**\n   * The maximum value of the slider.\n   *\n   * @default 100\n   */\n  max?: MaybeGetter<number | undefined>;\n  /**\n   * The orientation of the slider.\n   *\n   * @default \"horizontal\"\n   */\n  orientation?: MaybeGetter<\"horizontal\" | \"vertical\" | undefined>;\n\n  /**\n   * The step size of the slider.\n   *\n   * @default 1\n   */\n  step?: MaybeGetter<number | undefined>;\n\n  /**\n   * The default value for `tabs.value`\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that `tabs.value` only changes when the getter returns a new value.\n   *\n   * If omitted, it will use the first tab as default.\n   *\n   * @default undefined\n   */\n  value?: MaybeGetter<number | undefined>;\n  /**\n   * Called when the `Slider` instance tries to change the active tab.\n   */\n  onValueChange?: (active: number) => void;\n};"
   },
+  "SelectPlus": {
+    "constructorProps": [
+      {
+        "name": "open",
+        "type": "any",
+        "description": "If the Popover is open.\n\nWhen passing a getter, it will be used as source of truth,\nmeaning that the value only changes when the getter returns a new value.\n\nOtherwise, if passing a static value, it'll serve as the default value.",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "onOpenChange",
+        "type": "any",
+        "description": "Called when the value is supposed to change.",
+        "optional": true
+      },
+      {
+        "name": "forceVisible",
+        "type": "any",
+        "description": "If the popover visibility should be controlled by the user.",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "floatingConfig",
+        "type": "any",
+        "description": "Config to be passed to `useFloating`",
+        "optional": true
+      },
+      {
+        "name": "closeOnEscape",
+        "type": "any",
+        "description": "If the popover should close when clicking escape.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "closeOnOutsideClick",
+        "type": "any",
+        "description": "If the popover should close when clicking outside.\nAlternatively, accepts a function that receives the clicked element,\nand returns if the popover should close.",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "multiple",
+        "type": "MaybeGetter<Multiple | undefined>",
+        "description": "If `true`, multiple options can be selected at the same time.",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "value",
+        "type": "MaybeMultiple<T, Multiple> | undefined",
+        "description": "The value for the Select.\n\nWhen passing a getter, it will be used as source of truth,\nmeaning that the value only changes when the getter returns a new value.\n\nOtherwise, if passing a static value, it'll serve as the default value.",
+        "defaultValue": "false",
+        "optional": true
+      },
+      {
+        "name": "onValueChange",
+        "type": "OnMultipleChange<T, Multiple> | undefined",
+        "description": "Called when the value is supposed to change.",
+        "optional": true
+      },
+      {
+        "name": "highlighted",
+        "type": "MaybeGetter<T | null | undefined>",
+        "description": "The currently highlighted value.",
+        "optional": true
+      },
+      {
+        "name": "onHighlightChange",
+        "type": "((highlighted: T | null) => void) | undefined",
+        "description": "Called when the highlighted value changes.",
+        "optional": true
+      },
+      {
+        "name": "typeaheadTimeout",
+        "type": "MaybeGetter<number | undefined>",
+        "description": "How many time (in ms) the typeahead string is held before it is cleared",
+        "defaultValue": "500",
+        "optional": true
+      },
+      {
+        "name": "sameWidth",
+        "type": "MaybeGetter<boolean | undefined>",
+        "description": "If the content should have the same width as the trigger",
+        "defaultValue": "true",
+        "optional": true
+      },
+      {
+        "name": "scrollAlignment",
+        "type": "MaybeGetter<\"nearest\" | \"center\" | null | undefined>",
+        "description": "Determines behavior when scrolling items into view.\nSet to null to disable auto-scrolling.",
+        "defaultValue": "\"nearest\"",
+        "optional": true
+      },
+      {
+        "name": "getOptionLabel",
+        "type": "((value: T) => string) | undefined",
+        "description": "Function to extract a string representation of option for display",
+        "defaultValue": "value => String(value)",
+        "optional": true
+      }
+    ],
+    "methods": [
+      {
+        "name": "getOptionId",
+        "type": "(value: T) => string",
+        "description": ""
+      },
+      {
+        "name": "getOption",
+        "type": "(\n  value: T,\n  options?:\n    | { typeahead?: string | undefined; label?: string | undefined }\n    | undefined,\n) => {\n  readonly \"data-melt-select-option\": \"\"\n  readonly \"data-value\": string\n  readonly \"data-typeahead\": string\n  readonly \"data-label\": string\n  readonly \"aria-hidden\": true | undefined\n  readonly \"aria-selected\": boolean\n  readonly \"data-highlighted\": \"\" | undefined\n  readonly role: \"option\"\n  readonly tabindex: -1\n  readonly onmouseover: () => void\n  readonly onclick: () => void\n}",
+        "description": ""
+      },
+      {
+        "name": "typeaheadSearch",
+        "type": "(searchText: string) => boolean",
+        "description": "Manually triggers a typeahead search using the provided string\n@param searchText The text to search for"
+      }
+    ],
+    "properties": [
+      {
+        "name": "multiple",
+        "type": "Multiple",
+        "description": ""
+      },
+      {
+        "name": "scrollAlignment",
+        "type": "\"nearest\" | \"center\" | null",
+        "description": ""
+      },
+      {
+        "name": "ids",
+        "type": "{ trigger: string; content: string; option: string } & {\n  invoker: string\n  popover: string\n}",
+        "description": ""
+      },
+      {
+        "name": "typeaheadTimeout",
+        "type": "number",
+        "description": ""
+      },
+      {
+        "name": "typeahead",
+        "type": "(\n  letter: string,\n) =>\n  | {\n      value: string\n      typeahead?: string | undefined\n      current: boolean\n      element: HTMLElement\n    }\n  | undefined",
+        "description": ""
+      },
+      {
+        "name": "isSelected",
+        "type": "(value: T) => boolean",
+        "description": ""
+      },
+      {
+        "name": "select",
+        "type": "(value: T) => void",
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "SelectionStateValue<T, Multiple>",
+        "description": ""
+      },
+      {
+        "name": "highlighted",
+        "type": "T | null",
+        "description": ""
+      },
+      {
+        "name": "valueAsString",
+        "type": "string",
+        "description": ""
+      },
+      {
+        "name": "trigger",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly id: string\n  readonly popovertarget: string\n  readonly onclick: (e: Event) => void\n} & {\n  \"data-melt-select-trigger\": string\n  role: string\n  \"aria-expanded\": boolean\n  \"aria-controls\": string\n  \"aria-owns\": string\n  onkeydown: (e: KeyboardEvent) => void\n}",
+        "description": ""
+      },
+      {
+        "name": "content",
+        "type": "{\n  readonly onfocus: (event: FocusEvent) => void\n  readonly onfocusout: (event: FocusEvent) => Promise<void>\n  readonly style: `--melt-invoker-width: ${string}; --melt-invoker-height: ${string}; --melt-invoker-x: ${string}; --melt-invoker-y: ${string}; --melt-popover-available-width: ${string}; --melt-popover-available-height: ${string}`\n  readonly id: string\n  readonly popover: \"manual\"\n  readonly ontoggle: (\n    e: ToggleEvent & { currentTarget: EventTarget & HTMLElement },\n  ) => void\n  readonly tabindex: -1\n  readonly inert: boolean\n  readonly \"data-open\": \"\" | undefined\n} & {\n  readonly \"data-melt-select-content\": \"\"\n  readonly role: \"listbox\"\n  readonly \"aria-expanded\": boolean\n  readonly \"aria-activedescendant\": string | undefined\n  readonly onkeydown: (e: KeyboardEvent) => void\n}",
+        "description": ""
+      }
+    ],
+    "propsAlt": "export type SelectPlusProps<T, Multiple extends boolean = false> = Omit<\n  PopoverProps,\n  \"sameWidth\"\n> & {\n  /**\n   * If `true`, multiple options can be selected at the same time.\n   *\n   * @default false\n   */\n  multiple?: MaybeGetter<Multiple | undefined>;\n\n  /**\n   * The value for the Select.\n   *\n   * When passing a getter, it will be used as source of truth,\n   * meaning that the value only changes when the getter returns a new value.\n   *\n   * Otherwise, if passing a static value, it'll serve as the default value.\n   *\n   * @default false\n   */\n  value?: MaybeMultiple<T, Multiple>;\n  \n  /**\n   * Called when the value is supposed to change.\n   */\n  onValueChange?: OnMultipleChange<T, Multiple>;\n\n  /**\n   * The currently highlighted value.\n   */\n  highlighted?: MaybeGetter<T | null | undefined>;\n\n  /**\n   * Called when the highlighted value changes.\n   */\n  onHighlightChange?: (highlighted: T | null) => void;\n\n  /**\n   * How many time (in ms) the typeahead string is held before it is cleared\n   * @default 500\n   */\n  typeaheadTimeout?: MaybeGetter<number | undefined>;\n\n  /**\n   * If the content should have the same width as the trigger\n   *\n   * @default true\n   */\n  sameWidth?: MaybeGetter<boolean | undefined>;\n\n  /**\n   * Determines behavior when scrolling items into view.\n   * Set to null to disable auto-scrolling.\n   *\n   * @default \"nearest\"\n   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView#block\n   */\n  scrollAlignment?: MaybeGetter<\"nearest\" | \"center\" | null | undefined>;\n\n  /**\n   * Function to extract a string representation of option for display\n   * @default value => String(value)\n   */\n  getOptionLabel?: (value: T) => string;\n};"
+  },
   "Select": {
     "constructorProps": [
       {

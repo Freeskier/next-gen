@@ -8,6 +8,7 @@ export * from "./Popover.svelte";
 export * from "./Progress.svelte";
 export * from "./RadioGroup.svelte";
 export * from "./Select.svelte";
+export * from "./SelectPlus.svelte";
 export * from "./Slider.svelte";
 export * from "./Tabs.svelte";
 export * from "./Toaster.svelte";

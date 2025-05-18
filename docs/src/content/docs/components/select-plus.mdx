@@ -1,0 +1,206 @@
+---
+title: SelectPlus
+description: An enhanced Select component that supports complex objects as options, not just strings.
+---
+import ApiTable from "@components/api-table.astro";
+import Preview from "@previews/select-plus.svelte";
+import Features from "@components/features.astro";
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+<Preview client:load />
+
+## Features
+
+<Features>
+	- 🔄 Works with any data type (objects, arrays, etc.)
+	- 🏷️ Custom label formatting for complex objects
+	- 🎹 Keyboard navigation
+	- 🍃 Multi-selection mode
+	- 🧠 Smart focus management
+	- ⌨️ Enhanced typeahead search with support for complex objects
+</Features>
+
+## Usage
+
+<Tabs>
+  <TabItem label="Builder">
+```svelte
+<script lang="ts">
+  import { SelectPlus } from "melt/builders";
+
+  // Define a complex data type 
+  interface Book {
+    id: number;
+    title: string;
+    author: string;
+    year: number;
+  }
+
+  // Sample data
+  const books: Book[] = [
+    { id: 1, title: "To Kill a Mockingbird", author: "Harper Lee", year: 1960 },
+    { id: 2, title: "1984", author: "George Orwell", year: 1949 },
+    { id: 3, title: "The Great Gatsby", author: "F. Scott Fitzgerald", year: 1925 },
+  ];
+
+  // Create the select component with the Book type
+  const select = new SelectPlus<Book>({
+    // Specify how to display the option as a string
+    getOptionLabel: (book) => book.title
+  });
+</script>
+
+<label for={select.ids.trigger}>Select a Book</label>
+<button {...select.trigger}>
+  {select.valueAsString || "Choose a book..."}
+</button>
+
+<div {...select.content}>
+  {#each books as book}
+    <div 
+      {...select.getOption(book, { 
+        // Label for display in trigger when selected
+        label: book.title,
+        // Text used for typeahead search
+        typeahead: `${book.title} ${book.author}`
+      })}
+    >
+      <div>
+        <span>{book.title}</span>
+        <span>{book.author} ({book.year})</span>
+      </div>
+    </div>
+  {/each}
+</div>
+```
+  </TabItem>
+
+  <TabItem label="Component">
+```svelte
+<script lang="ts">
+  import { SelectPlus } from "melt/components";
+
+  // Define a complex data type
+  interface Book {
+    id: number;
+    title: string;
+    author: string;
+    year: number;
+  }
+
+  // Sample data
+  const books: Book[] = [
+    { id: 1, title: "To Kill a Mockingbird", author: "Harper Lee", year: 1960 },
+    { id: 2, title: "1984", author: "George Orwell", year: 1949 },
+    { id: 3, title: "The Great Gatsby", author: "F. Scott Fitzgerald", year: 1925 },
+  ];
+</script>
+
+<SelectPlus getOptionLabel={(book) => book.title}>
+  {#snippet children(select)}
+    <label for={select.ids.trigger}>Select a Book</label>
+    <button {...select.trigger}>
+      {select.valueAsString || "Choose a book..."}
+    </button>
+
+    <div {...select.content}>
+      {#each books as book}
+        <div 
+          {...select.getOption(book, { 
+            label: book.title,
+            typeahead: `${book.title} ${book.author}`
+          })}
+        >
+          <div>
+            <span>{book.title}</span>
+            <span>{book.author} ({book.year})</span>
+          </div>
+        </div>
+      {/each}
+    </div>
+  {/snippet}
+</SelectPlus>
+```
+  </TabItem>
+</Tabs>
+
+## Working with Objects
+
+The `SelectPlus` component extends the regular `Select` with the ability to work with any data type, not just strings. This makes it ideal for scenarios where you need to select from a list of complex objects.
+
+### Key Requirements
+
+1. **String Representation**: Every option needs a string representation, which you can customize with the `getOptionLabel` prop.
+
+2. **Typeahead Support**: For typeahead search to work properly, you can specify a `typeahead` string for each option, which can include multiple fields for better matching.
+
+3. **Unique String Representation**: Each option should have a unique string representation as this is used internally for tracking.
+
+### Typeahead Functionality
+
+The typeahead feature in SelectPlus allows users to quickly find options by typing. As users type characters, the component automatically highlights the first matching option. The matching is performed against the `typeahead` property provided in the `getOption` method.
+
+```svelte
+<div {...select.getOption(user, {
+  // Custom label for display when selected
+  label: `${user.firstName} ${user.lastName}`,
+  
+  // Text used for typeahead search - can include multiple properties
+  // for better matching (e.g., including both name and email)
+  typeahead: `${user.firstName} ${user.lastName} ${user.email}`
+})}>
+  <!-- Option content -->
+</div>
+```
+
+By including multiple fields in the typeahead string, users can search by any relevant property of the complex object.
+
+### Example with Custom Objects
+
+```svelte
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+const users: User[] = [
+  { id: 1, firstName: "John", lastName: "Doe", email: "john@example.com" },
+  { id: 2, firstName: "Jane", lastName: "Smith", email: "jane@example.com" }
+];
+
+const userSelect = new SelectPlus<User>({
+  getOptionLabel: (user) => `${user.firstName} ${user.lastName}`
+});
+
+// In your template:
+<div {...userSelect.getOption(user, {
+  // Additional search terms for typeahead
+  typeahead: `${user.firstName} ${user.lastName} ${user.email}`
+})}>
+  // Your custom rendering
+</div>
+```
+
+## API Reference
+
+<ApiTable entry="SelectPlus" />
+
+## Differences from Select
+
+`SelectPlus` offers the same API as the regular `Select` component, with these additions:
+
+- **Generic Type Support**: Works with any TypeScript type, not just strings
+- **getOptionLabel**: A function prop to specify how to display your objects as strings
+- **Enhanced Typeahead Support**: The `getOption` method accepts a `typeahead` option to specify custom search text that can include multiple properties for better matching
+- **Object Mapping**: Built-in tracking of object references to ensure proper type safety with complex objects
+
+### Additional Methods
+
+SelectPlus also includes a few additional helper methods:
+
+- **typeaheadSearch(text: string)**: Manually trigger a typeahead search with the provided text
+- **valueAsString**: Returns a formatted string representation of the selected value(s), using the `getOptionLabel` function
+
+For all other features and behaviors, `SelectPlus` works the same way as the regular `Select` component.
