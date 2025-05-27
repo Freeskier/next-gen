@@ -1,10 +1,10 @@
-import { Synced } from "$lib/Synced.svelte";
-import type { Getter, MaybeGetter } from "$lib/types";
-import { dataAttr, disabledAttr } from "$lib/utils/attribute";
-import { extract } from "$lib/utils/extract";
-import { createBuilderMetadata } from "$lib/utils/identifiers";
-import { isHtmlElement } from "$lib/utils/is";
-import { getDirectionalKeys, kbd } from "$lib/utils/keyboard";
+import { Synced } from "../Synced.svelte";
+import type { Getter, MaybeGetter } from "../types";
+import { dataAttr, disabledAttr } from "../utils/attribute";
+import { extract } from "../utils/extract";
+import { createBuilderMetadata } from "../utils/identifiers";
+import { isHtmlElement } from "../utils/is";
+import { getDirectionalKeys, kbd } from "../utils/keyboard";
 import type { HTMLAttributes, HTMLInputAttributes, HTMLLabelAttributes } from "svelte/elements";
 
 const metadata = createBuilderMetadata("radio-group", ["root", "item", "label", "hidden-input"]);
