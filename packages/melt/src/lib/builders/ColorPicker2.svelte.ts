@@ -50,10 +50,21 @@ export type ColorPickerProps = Omit<PopoverProps, "open"> & {
 	onFormatChange?: (format: ColorFormat) => void;
 };
 
+type ChannelType = "red" | "green" | "blue" | "hue" | "saturation-hsl" | "lightness" | "saturation-hsv" | "value" | "alpha";
+
+interface ChannelConfig {
+	type: ChannelType;
+	min: number;
+	max: number;
+	value: number;
+	onValueChange: (value: number) => void;
+	generateGradient: (color: ColorInstance) => string;
+}
+
 export class ColorPicker extends Popover {
 	#color: Synced<ColorInstance>;
 	#format: Synced<ColorFormat>;
-	#channelsData = $derived.by(() => this.#getChannelsData());
+	#channelConfigs = $derived.by(() => this.#getChannelConfigs());
 
 	#firstChannelSlider: ColorSlider;
 	#secondChannelSlider: ColorSlider;
@@ -86,29 +97,29 @@ export class ColorPicker extends Popover {
 		this.#firstChannelSlider = new ColorSlider({
 			step: 1,
 			currentColor: () => this.#color.current,
-			min: 0,
-			max: () => this.#channelsData?.first?.max ?? 255,
-			value: () => this.#channelsData?.first?.value ?? 0,
-			onValueChange: (value: number) => this.#channelsData?.first?.onValueChange?.(value),
-			channel: () => this.#getChannelType("first"),
+			min: () => this.#channelConfigs.first?.min ?? 0,
+			max: () => this.#channelConfigs.first?.max ?? 255,
+			value: () => this.#channelConfigs.first?.value ?? 0,
+			onValueChange: (value: number) => this.#channelConfigs.first?.onValueChange?.(value),
+			channel: () => this.#channelConfigs.first?.type ?? "red",
 		});
 		this.#secondChannelSlider = new ColorSlider({
 			step: 1,
 			currentColor: () => this.#color.current,
-			min: 0,
-			max: () => this.#channelsData?.second?.max ?? 255,
-			value: () => this.#channelsData?.second?.value ?? 0,
-			onValueChange: (value: number) => this.#channelsData?.second?.onValueChange?.(value),
-			channel: () => this.#getChannelType("second"),
+			min: () => this.#channelConfigs.second?.min ?? 0,
+			max: () => this.#channelConfigs.second?.max ?? 255,
+			value: () => this.#channelConfigs.second?.value ?? 0,
+			onValueChange: (value: number) => this.#channelConfigs.second?.onValueChange?.(value),
+			channel: () => this.#channelConfigs.second?.type ?? "green",
 		});
 		this.#thirdChannelSlider = new ColorSlider({
 			step: 1,
 			currentColor: () => this.#color.current,
-			min: 0,
-			max: () => this.#channelsData?.third?.max ?? 255,
-			value: () => this.#channelsData?.third?.value ?? 0,
-			onValueChange: (value: number) => this.#channelsData?.third?.onValueChange?.(value),
-			channel: () => this.#getChannelType("third"),
+			min: () => this.#channelConfigs.third?.min ?? 0,
+			max: () => this.#channelConfigs.third?.max ?? 255,
+			value: () => this.#channelConfigs.third?.value ?? 0,
+			onValueChange: (value: number) => this.#channelConfigs.third?.onValueChange?.(value),
+			channel: () => this.#channelConfigs.third?.type ?? "blue",
 		});
 
 		this.#hueSlider = new ColorSlider({
@@ -145,28 +156,41 @@ export class ColorPicker extends Popover {
 		this.#formatRadio = new RadioGroup({
 			value: () => this.#format.current,
 			onValueChange: (format: string) => {
-				console.log("Format changing to:", format);
 				this.#format.current = format as ColorFormat;
-				console.log("Format changed, new channels data:", this.#channelsData);
 			},
 		});
 	}
 
-	#getChannelType = (position: "first" | "second" | "third") => {
-		switch (this.format) {
-			case "hex":
-			case "rgb":
-				return position === "first" ? "red" : position === "second" ? "green" : "blue";
-			case "hsl":
-				return position === "first"
-					? "hue"
-					: position === "second"
-						? "saturation-hsl"
-						: "lightness";
-			case "hsv":
-				return position === "first" ? "hue" : position === "second" ? "saturation-hsv" : "value";
+	#createGradientGenerator = (type: ChannelType) => (color: ColorInstance): string => {
+		switch (type) {
+			case "red":
+				return `linear-gradient(to right, ${color.red(0).hex()}, ${color.red(255).hex()})`;
+			case "green":
+				return `linear-gradient(to right, ${color.green(0).hex()}, ${color.green(255).hex()})`;
+			case "blue":
+				return `linear-gradient(to right, ${color.blue(0).hex()}, ${color.blue(255).hex()})`;
+			case "hue":
+				return `linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))`;
+			case "saturation-hsl": {
+				const hue = color.hue();
+				const lightness = color.lightness();
+				return `linear-gradient(to right, hsl(${hue}, 0%, ${lightness}%), hsl(${hue}, 100%, ${lightness}%))`;
+			}
+			case "lightness": {
+				const hue = color.hue();
+				const saturation = color.saturationl();
+				return `linear-gradient(to right, hsl(${hue}, ${saturation}%, 0%), hsl(${hue}, ${saturation}%, 100%))`;
+			}
+			case "saturation-hsv":
+				return `linear-gradient(to right, ${color.saturationv(0).hex()}, ${color.saturationv(100).hex()})`;
+			case "value":
+				return `linear-gradient(to right, ${color.value(0).hex()}, ${color.value(100).hex()})`;
+			case "alpha": {
+				const { red: r, green: g, blue: b } = color.rgb().object();
+				return `linear-gradient(to right, rgba(${r}, ${g}, ${b}, 0), rgba(${r}, ${g}, ${b}, 1)), repeating-conic-gradient(#333 0% 25%, #666 0% 50%)`;
+			}
 			default:
-				return "red";
+				return "linear-gradient(to right, #ccc, #666)";
 		}
 	};
 
@@ -206,72 +230,90 @@ export class ColorPicker extends Popover {
 		return this.#format.current;
 	}
 
-	#getChannelsData = () => {
-		console.log("Getting channels data for format:", this.format);
+	#getChannelConfigs = (): { first: ChannelConfig; second: ChannelConfig; third: ChannelConfig } => {
+		const color = this.#color.current;
+		
 		switch (this.format) {
 			case "hex":
 			case "rgb":
 				return {
 					first: {
+						type: "red",
+						min: 0,
 						max: 255,
-						value: this.#color.current.red(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.red(value)),
+						value: color.red(),
+						onValueChange: (value: number) => (this.#color.current = color.red(value)),
+						generateGradient: this.#createGradientGenerator("red"),
 					},
 					second: {
+						type: "green",
+						min: 0,
 						max: 255,
-						value: this.#color.current.green(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.green(value)),
+						value: color.green(),
+						onValueChange: (value: number) => (this.#color.current = color.green(value)),
+						generateGradient: this.#createGradientGenerator("green"),
 					},
 					third: {
+						type: "blue",
+						min: 0,
 						max: 255,
-						value: this.#color.current.blue(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.blue(value)),
+						value: color.blue(),
+						onValueChange: (value: number) => (this.#color.current = color.blue(value)),
+						generateGradient: this.#createGradientGenerator("blue"),
 					},
 				};
 			case "hsl":
 				return {
 					first: {
+						type: "hue",
+						min: 0,
 						max: 360,
-						value: this.#color.current.hue(),
-						onValueChange: (value: number) => {
-							this.#color.current = this.#color.current.hue(value);
-						},
+						value: color.hue(),
+						onValueChange: (value: number) => (this.#color.current = color.hue(value)),
+						generateGradient: this.#createGradientGenerator("hue"),
 					},
 					second: {
+						type: "saturation-hsl",
+						min: 0,
 						max: 100,
-						value: this.#color.current.saturationl(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.saturationl(value)),
+						value: color.saturationl(),
+						onValueChange: (value: number) => (this.#color.current = color.saturationl(value)),
+						generateGradient: this.#createGradientGenerator("saturation-hsl"),
 					},
 					third: {
+						type: "lightness",
+						min: 0,
 						max: 100,
-						value: this.#color.current.lightness(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.lightness(value)),
+						value: color.lightness(),
+						onValueChange: (value: number) => (this.#color.current = color.lightness(value)),
+						generateGradient: this.#createGradientGenerator("lightness"),
 					},
 				};
 			case "hsv":
 				return {
 					first: {
+						type: "hue",
+						min: 0,
 						max: 360,
-						value: this.#color.current.hue(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.hue(value)),
+						value: color.hue(),
+						onValueChange: (value: number) => (this.#color.current = color.hue(value)),
+						generateGradient: this.#createGradientGenerator("hue"),
 					},
 					second: {
+						type: "saturation-hsv",
+						min: 0,
 						max: 100,
-						value: this.#color.current.saturationv(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.saturationv(value)),
+						value: color.saturationv(),
+						onValueChange: (value: number) => (this.#color.current = color.saturationv(value)),
+						generateGradient: this.#createGradientGenerator("saturation-hsv"),
 					},
 					third: {
+						type: "value",
+						min: 0,
 						max: 100,
-						value: this.#color.current.value(),
-						onValueChange: (value: number) =>
-							(this.#color.current = this.#color.current.value(value)),
+						value: color.value(),
+						onValueChange: (value: number) => (this.#color.current = color.value(value)),
+						generateGradient: this.#createGradientGenerator("value"),
 					},
 				};
 		}
@@ -280,17 +322,7 @@ export class ColorPicker extends Popover {
 
 export type ColorSliderProps = SliderProps & {
 	currentColor: MaybeGetter<ColorInstance>;
-	channel?: MaybeGetter<
-		| "red"
-		| "green"
-		| "blue"
-		| "hue"
-		| "saturation-hsl"
-		| "lightness"
-		| "saturation-hsv"
-		| "value"
-		| "alpha"
-	>;
+	channel?: MaybeGetter<ChannelType>;
 };
 
 export class ColorSlider extends Slider {
@@ -316,73 +348,50 @@ export class ColorSlider extends Slider {
 	}
 
 	get track() {
-		const gradient = this.#generateGradient();
+		const color = extract(this.#currentColor);
 		const channel = extract(this.#channel);
+		
+		if (!color || !channel) {
+			return { style: "background-image: linear-gradient(to right, #ccc, #666)" } as const;
+		}
+
+		const gradient = this.#generateGradientForChannel(color, channel);
 		const backgroundSize = channel === "alpha" ? "100%, 10px 10px" : "100%";
+		
 		return {
 			style: `background-image: ${gradient}; background-size: ${backgroundSize}`,
 		} as const;
 	}
 
-	#generateGradient = () => {
-		const color = extract(this.#currentColor);
-		const channel = extract(this.#channel);
-		if (!color || !channel) return "linear-gradient(to right, #ccc, #666)";
-
+	#generateGradientForChannel = (color: ColorInstance, channel: ChannelType): string => {
 		switch (channel) {
-			case "red": {
-				const start = color.red(0).hex();
-				const end = color.red(255).hex();
-				return `linear-gradient(to right, ${start}, ${end})`;
-			}
-			case "green": {
-				const start = color.green(0).hex();
-				const end = color.green(255).hex();
-				return `linear-gradient(to right, ${start}, ${end})`;
-			}
-			case "blue": {
-				const start = color.blue(0).hex();
-				const end = color.blue(255).hex();
-				return `linear-gradient(to right, ${start}, ${end})`;
-			}
-			case "hue": {
-				return `linear-gradient(to right,
-					hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%),
-					hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))`;
-			}
+			case "red":
+				return `linear-gradient(to right, ${color.red(0).hex()}, ${color.red(255).hex()})`;
+			case "green":
+				return `linear-gradient(to right, ${color.green(0).hex()}, ${color.green(255).hex()})`;
+			case "blue":
+				return `linear-gradient(to right, ${color.blue(0).hex()}, ${color.blue(255).hex()})`;
+			case "hue":
+				return `linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))`;
 			case "saturation-hsl": {
 				const hue = color.hue();
 				const lightness = color.lightness();
-				const start = `hsl(${hue}, 0%, ${lightness}%)`;
-				const end = `hsl(${hue}, 100%, ${lightness}%)`;
-				return `linear-gradient(to right, ${start}, ${end})`;
+				return `linear-gradient(to right, hsl(${hue}, 0%, ${lightness}%), hsl(${hue}, 100%, ${lightness}%))`;
 			}
 			case "lightness": {
 				const hue = color.hue();
 				const saturation = color.saturationl();
-				const start = `hsl(${hue}, ${saturation}%, 0%)`;
-				const end = `hsl(${hue}, ${saturation}%, 100%)`;
-				return `linear-gradient(to right, ${start}, ${end})`;
+				return `linear-gradient(to right, hsl(${hue}, ${saturation}%, 0%), hsl(${hue}, ${saturation}%, 100%))`;
 			}
-			case "saturation-hsv": {
-				const hue = color.hue();
-				const value = color.value();
-				const start = color.saturationv(0).hex();
-				const end = color.saturationv(100).hex();
-				return `linear-gradient(to right, ${start}, ${end})`;
-			}
-			case "value": {
-				const start = color.value(0).hex();
-				const end = color.value(100).hex();
-				return `linear-gradient(to right, ${start}, ${end})`;
-			}
+			case "saturation-hsv":
+				return `linear-gradient(to right, ${color.saturationv(0).hex()}, ${color.saturationv(100).hex()})`;
+			case "value":
+				return `linear-gradient(to right, ${color.value(0).hex()}, ${color.value(100).hex()})`;
 			case "alpha": {
-				const r = color.red();
-				const g = color.green();
-				const b = color.blue();
-				const transparent = `rgba(${r}, ${g}, ${b}, 0)`;
-				const opaque = `rgba(${r}, ${g}, ${b}, 1)`;
-				return `linear-gradient(to right, ${transparent}, ${opaque}), repeating-conic-gradient(#333 0% 25%, #666 0% 50%)`;
+				const r = Math.round(color.red());
+				const g = Math.round(color.green());
+				const b = Math.round(color.blue());
+				return `linear-gradient(to right, rgba(${r}, ${g}, ${b}, 0), rgba(${r}, ${g}, ${b}, 1)), repeating-conic-gradient(#333 0% 25%, #666 0% 50%)`;
 			}
 			default:
 				return "linear-gradient(to right, #ccc, #666)";
@@ -400,6 +409,7 @@ export class ColorBox {
 	#onColorChange?: (saturation: number, lightness: number) => void;
 	#isDragging = $state(false);
 	#surfaceElement: HTMLElement | null = null;
+	#keyboardStep = 1; // 1% step for keyboard navigation
 
 	constructor(props: ColorBoxProps = {}) {
 		this.#color = props.color ?? (() => Color("#000000"));
@@ -408,6 +418,17 @@ export class ColorBox {
 
 	get surface() {
 		return {
+			tabindex: 0,
+			role: "slider",
+			"aria-label": "2D color picker for saturation and lightness",
+			"aria-valuemin": 0,
+			"aria-valuemax": 100,
+			"aria-valuenow": () => Math.round(this.#color().saturationl()),
+			"aria-valuetext": () => {
+				const saturation = Math.round(this.#color().saturationl());
+				const lightness = Math.round(this.#color().lightness());
+				return `Saturation ${saturation}%, Lightness ${lightness}%`;
+			},
 			[createAttachmentKey()]: (node: HTMLElement) => {
 				this.#surfaceElement = node;
 
@@ -451,6 +472,58 @@ export class ColorBox {
 						node.releasePointerCapture(e.pointerId);
 					},
 				);
+
+				useEventListener(
+					() => node,
+					"keydown",
+					(e) => {
+						const currentSaturation = this.#color().saturationl();
+						const currentLightness = this.#color().lightness();
+						let newSaturation = currentSaturation;
+						let newLightness = currentLightness;
+
+						switch (e.key) {
+							case "ArrowRight":
+								e.preventDefault();
+								newSaturation = Math.min(100, currentSaturation + this.#keyboardStep);
+								break;
+							case "ArrowLeft":
+								e.preventDefault();
+								newSaturation = Math.max(0, currentSaturation - this.#keyboardStep);
+								break;
+							case "ArrowUp":
+								e.preventDefault();
+								newLightness = Math.min(100, currentLightness + this.#keyboardStep);
+								break;
+							case "ArrowDown":
+								e.preventDefault();
+								newLightness = Math.max(0, currentLightness - this.#keyboardStep);
+								break;
+							case "Home":
+								e.preventDefault();
+								newSaturation = 0;
+								newLightness = 50;
+								break;
+							case "End":
+								e.preventDefault();
+								newSaturation = 100;
+								newLightness = 50;
+								break;
+							case "PageUp":
+								e.preventDefault();
+								newLightness = Math.min(100, currentLightness + 10);
+								break;
+							case "PageDown":
+								e.preventDefault();
+								newLightness = Math.max(0, currentLightness - 10);
+								break;
+						}
+
+						if (newSaturation !== currentSaturation || newLightness !== currentLightness) {
+							this.#onColorChange?.(newSaturation, newLightness);
+						}
+					},
+				);
 			},
 		};
 	}
@@ -471,6 +544,7 @@ export class ColorBox {
 
 	get handle() {
 		return {
+			"aria-hidden": "true",
 			[createAttachmentKey()]: (node: HTMLElement) => {
 				$effect(() => {
 					if (!this.#surfaceElement) return;

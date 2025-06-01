@@ -18,8 +18,9 @@
 			class="absolute left-0 right-0 top-1/2 h-4 -translate-y-1/2 rounded-full"
 		></div>
 		<div
+			style={`background: ${picker.color}`}
 			class="focus-visible:ring-accent-300 border-accent-300 absolute left-[var(--percentage)] top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-md
-					border-2 bg-white outline-none
+					border-2 outline-none
 					transition-all focus-visible:ring focus-visible:ring-offset-black data-[dragging]:transition-none dark:border-none dark:focus-visible:ring-offset-2"
 			{...pickerSlider.thumb}
 		></div>
@@ -31,13 +32,13 @@
 	{#if picker.arrow}
 		<div {...picker.arrow} class="size-2 rounded-tl"></div>
 	{/if}
-	<div {...picker.content} class="flex flex-col items-center justify-center gap-4">
+	<div {...picker.content} class="flex flex-col items-center justify-center gap-4 p-6">
 		<h1 style={`color: ${picker.color}`}>ASD QWE</h1>
 		<pre>{picker.color} {picker.format}</pre>
 
 		<div
 			{...picker.saturationBox.surface}
-			class="relative h-48 w-48 rounded border border-gray-300"
+			class="relative h-48 w-full rounded border border-gray-300"
 		>
 			<div
 				{...picker.saturationBox.handle}
