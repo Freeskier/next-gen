@@ -1,68 +1,58 @@
 <script lang="ts">
 	import Preview from "@components/preview.svelte";
-	import { ColorPicker } from "../../../packages/melt/src/lib/builders/ColorPicker2.svelte";
+	import {
+		ColorPicker,
+		ColorSlider,
+	} from "../../../packages/melt/src/lib/builders/ColorPicker2.svelte";
 
 	const picker = new ColorPicker({ format: "hsl" });
 </script>
 
+{#snippet slider(pickerSlider: ColorSlider)}
+	<div
+		class="max-w-[90%]' group relative mx-auto w-[350px] p-3 outline-none"
+		{...pickerSlider.root}
+	>
+		<div
+			{...pickerSlider.track}
+			class="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-gray-500"
+		>
+			<div
+				class="bg-accent-300 absolute inset-0 right-[var(--percentage-inv)] rounded-full transition-all group-data-[dragging]:transition-none"
+			></div>
+		</div>
+		<div
+			class="focus-visible:ring-accent-300 border-accent-300 absolute left-[var(--percentage)] top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-md
+					border-2 bg-white outline-none
+					transition-all focus-visible:ring focus-visible:ring-offset-black data-[dragging]:transition-none dark:border-none dark:focus-visible:ring-offset-2"
+			{...pickerSlider.thumb}
+		></div>
+	</div>
+{/snippet}
+
 <Preview>
-	<button {...picker.trigger}>click</button>
+	<button {...picker.trigger} style={`background: ${picker.color}`}>click</button>
 	{#if picker.arrow}
 		<div {...picker.arrow} class="size-2 rounded-tl"></div>
 	{/if}
 	<div {...picker.content} class="flex flex-col items-center justify-center gap-4">
 		<h1 style={`color: ${picker.color}`}>ASD QWE</h1>
 		<pre>{picker.color} {picker.format}</pre>
+
 		<div
-			class="max-w-[90%]' group relative mx-auto w-[350px] p-3 outline-none"
-			{...picker.firstChannel.root}
+			{...picker.saturationBox.surface}
+			class="relative h-48 w-64 rounded border border-gray-300"
 		>
-			<div class="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-gray-500">
-				<div
-					class="bg-accent-300 absolute inset-0 right-[var(--percentage-inv)] rounded-full transition-all group-data-[dragging]:transition-none"
-				></div>
-			</div>
 			<div
-				class="focus-visible:ring-accent-300 border-accent-300 absolute left-[var(--percentage)] top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-md
-					border-2 bg-white outline-none
-					transition-all focus-visible:ring focus-visible:ring-offset-black data-[dragging]:transition-none dark:border-none dark:focus-visible:ring-offset-2"
-				{...picker.firstChannel.thumb}
+				{...picker.saturationBox.handle}
+				class="size-4 rounded-full border-2 border-white bg-transparent shadow-md"
 			></div>
 		</div>
 
-		<div
-			class="max-w-[90%]' group relative mx-auto w-[350px] p-3 outline-none"
-			{...picker.secondChannel.root}
-		>
-			<div class="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-gray-500">
-				<div
-					class="bg-accent-300 absolute inset-0 right-[var(--percentage-inv)] rounded-full transition-all group-data-[dragging]:transition-none"
-				></div>
-			</div>
-			<div
-				class="focus-visible:ring-accent-300 border-accent-300 absolute left-[var(--percentage)] top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-md
-					border-2 bg-white outline-none
-					transition-all focus-visible:ring focus-visible:ring-offset-black data-[dragging]:transition-none dark:border-none dark:focus-visible:ring-offset-2"
-				{...picker.secondChannel.thumb}
-			></div>
-		</div>
-
-		<div
-			class="max-w-[90%]' group relative mx-auto w-[350px] p-3 outline-none"
-			{...picker.thirdChannel.root}
-		>
-			<div class="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-gray-500">
-				<div
-					class="bg-accent-300 absolute inset-0 right-[var(--percentage-inv)] rounded-full transition-all group-data-[dragging]:transition-none"
-				></div>
-			</div>
-			<div
-				class="focus-visible:ring-accent-300 border-accent-300 absolute left-[var(--percentage)] top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-md
-					border-2 bg-white outline-none
-					transition-all focus-visible:ring focus-visible:ring-offset-black data-[dragging]:transition-none dark:border-none dark:focus-visible:ring-offset-2"
-				{...picker.thirdChannel.thumb}
-			></div>
-		</div>
+		{@render slider(picker.alphaChannel)}
+		{@render slider(picker.firstChannel)}
+		{@render slider(picker.secondChannel)}
+		{@render slider(picker.thirdChannel)}
 
 		<div class="mx-auto flex w-fit flex-col gap-2" {...picker.formatRadioGroup.root}>
 			<div class="flex flex-row gap-3">
