@@ -15,12 +15,8 @@
 	>
 		<div
 			{...pickerSlider.track}
-			class="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-gray-500"
-		>
-			<div
-				class="bg-accent-300 absolute inset-0 right-[var(--percentage-inv)] rounded-full transition-all group-data-[dragging]:transition-none"
-			></div>
-		</div>
+			class="absolute left-0 right-0 top-1/2 h-4 -translate-y-1/2 rounded-full"
+		></div>
 		<div
 			class="focus-visible:ring-accent-300 border-accent-300 absolute left-[var(--percentage)] top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-md
 					border-2 bg-white outline-none
@@ -41,7 +37,7 @@
 
 		<div
 			{...picker.saturationBox.surface}
-			class="relative h-48 w-64 rounded border border-gray-300"
+			class="relative h-48 w-48 rounded border border-gray-300"
 		>
 			<div
 				{...picker.saturationBox.handle}
