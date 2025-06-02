@@ -50,16 +50,25 @@ export type ColorPickerProps = Omit<PopoverProps, "open"> & {
 	onFormatChange?: (format: ColorFormat) => void;
 };
 
-type ChannelType = "red" | "green" | "blue" | "hue" | "saturation-hsl" | "lightness" | "saturation-hsv" | "value" | "alpha";
+type ChannelType =
+	| "red"
+	| "green"
+	| "blue"
+	| "hue"
+	| "saturation-hsl"
+	| "lightness"
+	| "saturation-hsv"
+	| "value"
+	| "alpha";
 
-interface ChannelConfig {
+type ChannelConfig = {
 	type: ChannelType;
 	min: number;
 	max: number;
 	value: number;
 	onValueChange: (value: number) => void;
 	generateGradient: (color: ColorInstance) => string;
-}
+};
 
 export class ColorPicker extends Popover {
 	#color: Synced<ColorInstance>;
@@ -82,6 +91,7 @@ export class ColorPicker extends Popover {
 				props.onOpenChange?.(openState);
 			},
 		});
+
 		this.#color = new Synced({
 			value: Color(props.color),
 			onChange: props.onColorChange,
@@ -161,38 +171,40 @@ export class ColorPicker extends Popover {
 		});
 	}
 
-	#createGradientGenerator = (type: ChannelType) => (color: ColorInstance): string => {
-		switch (type) {
-			case "red":
-				return `linear-gradient(to right, ${color.red(0).hex()}, ${color.red(255).hex()})`;
-			case "green":
-				return `linear-gradient(to right, ${color.green(0).hex()}, ${color.green(255).hex()})`;
-			case "blue":
-				return `linear-gradient(to right, ${color.blue(0).hex()}, ${color.blue(255).hex()})`;
-			case "hue":
-				return `linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))`;
-			case "saturation-hsl": {
-				const hue = color.hue();
-				const lightness = color.lightness();
-				return `linear-gradient(to right, hsl(${hue}, 0%, ${lightness}%), hsl(${hue}, 100%, ${lightness}%))`;
+	#createGradientGenerator =
+		(type: ChannelType) =>
+		(color: ColorInstance): string => {
+			switch (type) {
+				case "red":
+					return `linear-gradient(to right, ${color.red(0).hex()}, ${color.red(255).hex()})`;
+				case "green":
+					return `linear-gradient(to right, ${color.green(0).hex()}, ${color.green(255).hex()})`;
+				case "blue":
+					return `linear-gradient(to right, ${color.blue(0).hex()}, ${color.blue(255).hex()})`;
+				case "hue":
+					return `linear-gradient(to right, hsl(0, 100%, 50%), hsl(60, 100%, 50%), hsl(120, 100%, 50%), hsl(180, 100%, 50%), hsl(240, 100%, 50%), hsl(300, 100%, 50%), hsl(360, 100%, 50%))`;
+				case "saturation-hsl": {
+					const hue = color.hue();
+					const lightness = color.lightness();
+					return `linear-gradient(to right, hsl(${hue}, 0%, ${lightness}%), hsl(${hue}, 100%, ${lightness}%))`;
+				}
+				case "lightness": {
+					const hue = color.hue();
+					const saturation = color.saturationl();
+					return `linear-gradient(to right, hsl(${hue}, ${saturation}%, 0%), hsl(${hue}, ${saturation}%, 100%))`;
+				}
+				case "saturation-hsv":
+					return `linear-gradient(to right, ${color.saturationv(0).hex()}, ${color.saturationv(100).hex()})`;
+				case "value":
+					return `linear-gradient(to right, ${color.value(0).hex()}, ${color.value(100).hex()})`;
+				case "alpha": {
+					const { red: r, green: g, blue: b } = color.rgb().object();
+					return `linear-gradient(to right, rgba(${r}, ${g}, ${b}, 0), rgba(${r}, ${g}, ${b}, 1)), repeating-conic-gradient(#333 0% 25%, #666 0% 50%)`;
+				}
+				default:
+					return "linear-gradient(to right, #ccc, #666)";
 			}
-			case "lightness": {
-				const hue = color.hue();
-				const saturation = color.saturationl();
-				return `linear-gradient(to right, hsl(${hue}, ${saturation}%, 0%), hsl(${hue}, ${saturation}%, 100%))`;
-			}
-			case "saturation-hsv":
-				return `linear-gradient(to right, ${color.saturationv(0).hex()}, ${color.saturationv(100).hex()})`;
-			case "value":
-				return `linear-gradient(to right, ${color.value(0).hex()}, ${color.value(100).hex()})`;
-			case "alpha": {
-				const { red: r, green: g, blue: b } = color.rgb().object();
-				return `linear-gradient(to right, rgba(${r}, ${g}, ${b}, 0), rgba(${r}, ${g}, ${b}, 1)), repeating-conic-gradient(#333 0% 25%, #666 0% 50%)`;
-			}
-			default:
-				return "linear-gradient(to right, #ccc, #666)";
-		}
-	};
+		};
 
 	get hue() {
 		return this.#hueSlider;
@@ -230,9 +242,13 @@ export class ColorPicker extends Popover {
 		return this.#format.current;
 	}
 
-	#getChannelConfigs = (): { first: ChannelConfig; second: ChannelConfig; third: ChannelConfig } => {
+	#getChannelConfigs = (): {
+		first: ChannelConfig;
+		second: ChannelConfig;
+		third: ChannelConfig;
+	} => {
 		const color = this.#color.current;
-		
+
 		switch (this.format) {
 			case "hex":
 			case "rgb":
@@ -350,14 +366,14 @@ export class ColorSlider extends Slider {
 	get track() {
 		const color = extract(this.#currentColor);
 		const channel = extract(this.#channel);
-		
+
 		if (!color || !channel) {
 			return { style: "background-image: linear-gradient(to right, #ccc, #666)" } as const;
 		}
 
 		const gradient = this.#generateGradientForChannel(color, channel);
 		const backgroundSize = channel === "alpha" ? "100%, 10px 10px" : "100%";
-		
+
 		return {
 			style: `background-image: ${gradient}; background-size: ${backgroundSize}`,
 		} as const;
@@ -525,7 +541,7 @@ export class ColorBox {
 					},
 				);
 			},
-		};
+		} as const;
 	}
 
 	#updateColorFromPointer = (e: PointerEvent) => {
@@ -564,6 +580,6 @@ export class ColorBox {
 					node.style.pointerEvents = "none";
 				});
 			},
-		};
+		} as const;
 	}
 }

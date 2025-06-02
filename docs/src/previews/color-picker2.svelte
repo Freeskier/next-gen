@@ -4,6 +4,7 @@
 		ColorPicker,
 		ColorSlider,
 	} from "../../../packages/melt/src/lib/builders/ColorPicker2.svelte";
+	import { fly } from "svelte/transition";
 
 	const picker = new ColorPicker({ format: "hsl" });
 </script>
@@ -29,63 +30,71 @@
 
 <Preview>
 	<button {...picker.trigger} style={`background: ${picker.color}`}>click</button>
-	{#if picker.arrow}
-		<div {...picker.arrow} class="size-2 rounded-tl"></div>
-	{/if}
-	<div {...picker.content} class="flex flex-col items-center justify-center gap-4 p-6">
-		<h1 style={`color: ${picker.color}`}>ASD QWE</h1>
-		<pre>{picker.color} {picker.format}</pre>
 
+	{#if picker.open}
 		<div
-			{...picker.saturationBox.surface}
-			class="relative h-48 w-full rounded border border-gray-300"
+			{...picker.content}
+			in:fly={{ y: 20, opacity: 0 }}
+			class="flex flex-col items-center justify-center gap-4 p-6"
 		>
 			<div
-				{...picker.saturationBox.handle}
-				class="size-4 rounded-full border-2 border-white bg-transparent shadow-md"
+				{...picker.arrow}
+				class="h-0 w-0 border-b-4 border-l-4 border-r-4 border-b-gray-600 border-l-transparent border-r-transparent"
 			></div>
-		</div>
+			<h1 style={`color: ${picker.color}`}>ASD QWE</h1>
+			<pre>{picker.color} {picker.format}</pre>
 
-		{@render slider(picker.alphaChannel)}
-		{@render slider(picker.firstChannel)}
-		{@render slider(picker.secondChannel)}
-		{@render slider(picker.thirdChannel)}
+			<div
+				{...picker.saturationBox.surface}
+				class="relative h-48 w-full rounded border border-gray-300"
+			>
+				<div
+					{...picker.saturationBox.handle}
+					class="size-4 rounded-full border-2 border-white bg-transparent shadow-md"
+				></div>
+			</div>
 
-		<div class="mx-auto flex w-fit flex-col gap-2" {...picker.formatRadioGroup.root}>
-			<div class="flex flex-row gap-3">
-				{#each ["hsv", "hsl", "rgb", "hex"] as i}
-					{@const item = picker.formatRadioGroup.getItem(i)}
-					<div
-						class="ring-accent-500 -ml-1 flex items-center gap-3 rounded p-1 outline-none focus-visible:ring
-					data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50"
-						{...item.attrs}
-					>
+			{@render slider(picker.alphaChannel)}
+			{@render slider(picker.firstChannel)}
+			{@render slider(picker.secondChannel)}
+			{@render slider(picker.thirdChannel)}
+
+			<div class="mx-auto flex w-fit flex-col gap-2" {...picker.formatRadioGroup.root}>
+				<div class="flex flex-row gap-3">
+					{#each ["hsv", "hsl", "rgb", "hex"] as i}
+						{@const item = picker.formatRadioGroup.getItem(i)}
 						<div
-							class={[
-								"grid h-6 w-6 place-items-center rounded-full border shadow-sm",
-								"hover:bg-gray-100 data-[disabled=true]:bg-gray-400",
-								item.checked
-									? "bg-accent-500 border-accent-500 dark:bg-white"
-									: "border-neutral-400 bg-neutral-100",
-								"dark:border-white",
-							]}
+							class="ring-accent-500 -ml-1 flex items-center gap-3 rounded p-1 outline-none focus-visible:ring
+					data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50"
+							{...item.attrs}
 						>
-							{#if item.checked}
-								<div
-									class={["h-3 w-3 rounded-full", item.checked && "dark:bg-accent-500 bg-white"]}
-									aria-hidden="true"
-								></div>
-							{/if}
-						</div>
+							<div
+								class={[
+									"grid h-6 w-6 place-items-center rounded-full border shadow-sm",
+									"hover:bg-gray-100 data-[disabled=true]:bg-gray-400",
+									item.checked
+										? "bg-accent-500 border-accent-500 dark:bg-white"
+										: "border-neutral-400 bg-neutral-100",
+									"dark:border-white",
+								]}
+							>
+								{#if item.checked}
+									<div
+										class={["h-3 w-3 rounded-full", item.checked && "dark:bg-accent-500 bg-white"]}
+										aria-hidden="true"
+									></div>
+								{/if}
+							</div>
 
-						<span class="font-semibold capitalize leading-none text-gray-600 dark:text-gray-100">
-							{i}
-						</span>
-					</div>
-				{/each}
+							<span class="font-semibold capitalize leading-none text-gray-600 dark:text-gray-100">
+								{i}
+							</span>
+						</div>
+					{/each}
+				</div>
 			</div>
 		</div>
-	</div>
+	{/if}
 </Preview>
 
 <style>
